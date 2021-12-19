@@ -8,10 +8,12 @@ import Layout from '../Layout/Layout';
 const Logo = () => {
   return (
     <Layout className="ml-8 mt-10 inline-block items-center cursor-pointer hover:animate-bounce">
-      <Image priority src={noted} alt="Noted" width={30} height={30} />
-      <p className="ml-5 text-slate-50 uppercase font-bold text-base hidden">
-        <Link href="/">Noted</Link>
-      </p>
+      <Link href="/" passHref>
+        <div>
+          <Image priority src={noted} alt="Noted" width={30} height={30} />
+          <p className="ml-5 text-slate-50 uppercase font-bold text-base hidden">Noted</p>
+        </div>
+      </Link>
     </Layout>
   );
 };
