@@ -1,46 +1,56 @@
+import axios from 'axios';
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import Router from 'next/router';
+import { toast } from 'react-hot-toast';
+import React, { useContext, useEffect, useState } from 'react';
 
 import Button from '../../Components/Button/Button';
 import Layout from '../../Components/Layout/Layout';
+import AuthContext from '../../contexts/Auth.context';
 import FormInput from '../../Components/Form/FormInput/FormInput';
 
 const RegisterPage = () => {
   // Form Data
-  const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
+  const { authToken } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (authToken) {
+      Router.push('/notes');
+    }
+  }, [authToken]);
+
   // Handlers
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
-  const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(name);
-    console.log(email);
-    console.log(password);
+
+    if (email.trim() && password.trim()) {
+      try {
+        const data = { email, password };
+        const config = { headers: { 'Content-Type': 'application/json' } };
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/auth/signup`, data, config);
+        if (response.status === 201) {
+          toast.success('Account created successfully, you may now login!');
+        }
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      }
+    }
   };
 
   return (
-    <Layout className="px-8 py-4">
+    <Layout className="px-8 py-4 xl:w-3/4 xl:mx-auto 2xl:w-3/5">
       <Head>
         <title>Register - Noted</title>
         <meta name="description" content="Note taking made easy and beautiful" />
       </Head>
-      <h2 className="text-slate-50 font-bold text-2xl mb-8">Register</h2>
-      <form onSubmit={handleFormSubmit}>
-        <FormInput
-          type="text"
-          name="register-name-input"
-          value={name}
-          setValue={handleNameChange}
-          label="Name"
-          required={true}
-          placeholder="Your awesome name"
-          className="mb-4"
-        />
+      <h2 className="text-slate-50 font-bold text-2xl md:text-3xl mb-8 sm:ml-32 md:ml-44 lg:ml-64">Register</h2>
+      <form onSubmit={handleFormSubmit} className="sm:mr-32 sm:ml-32 md:ml-44 md:mr-44 lg:ml-64 lg:mr-64">
         <FormInput
           type="email"
           name="register-email-input"
@@ -52,7 +62,7 @@ const RegisterPage = () => {
           className="mb-4"
         />
         <FormInput
-          type="text"
+          type="password"
           name="register-password-input"
           value={password}
           setValue={handlePasswordChange}

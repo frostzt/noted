@@ -4,15 +4,18 @@ import { AnimatePresence } from 'framer-motion';
 
 import '../styles/globals.css';
 import Logo from '../Components/Logo/Logo';
+import { AuthProvider } from '../contexts/Auth.context';
+import { Toaster } from 'react-hot-toast';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div>
+    <AuthProvider>
+      <Toaster />
       <Logo />
       <AnimatePresence exitBeforeEnter initial={true}>
         <Component {...pageProps} />
       </AnimatePresence>
-    </div>
+    </AuthProvider>
   );
 }
 

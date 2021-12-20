@@ -23,7 +23,7 @@ const Home: NextPage = () => {
           </p>
           <Link href="/auth/login" passHref>
             <div className="inline-block">
-              <Button className="mt-4">
+              <Button className="mt-4 sm:mt-6">
                 <Emoji symbol="🎉" label="Party Popper" /> Get Started
               </Button>
             </div>
