@@ -12,14 +12,15 @@ import AuthContext from '../../contexts/Auth.context';
 import NoteCreator from '../../Components/Form/NoteCreator/NoteCreator';
 
 interface ITask {
+  id: string;
   title: string;
   status: TaskStatus;
   description: string;
 }
 
 const NotesPage = () => {
-  let i = 0;
   const [tasks, setTasks] = useState<ITask[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
   const { authToken, isAuthenticated } = useContext(AuthContext);
@@ -40,9 +41,24 @@ const NotesPage = () => {
     setDescription('');
 
     try {
-      const config = { headers: { Authorization: `Bearer ${authToken}` } };
+      setLoading(true);
       const data = { title, description };
+      const config = { headers: { Authorization: `Bearer ${authToken}` } };
       await axios.post(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/tasks`, data, config);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const deleteThis = async (id: string) => {
+    try {
+      setLoading(true);
+      const config = { headers: { Authorization: `Bearer ${authToken}` } };
+      await axios.delete(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/tasks/${id}`, config);
+      setLoading(false);
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
@@ -61,10 +77,10 @@ const NotesPage = () => {
       }
     };
 
-    if (!isCreating) {
+    if (!isCreating && !loading) {
       fetchData();
     }
-  }, [authToken, isCreating]);
+  }, [authToken, isCreating, loading]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -73,7 +89,7 @@ const NotesPage = () => {
   }, [isAuthenticated]);
 
   return (
-    <Layout className="px-8 py-4 xl:w-3/4 xl:mx-auto 2xl:w-3/5">
+    <Layout className="px-8 xl:w-3/4 xl:mx-auto 2xl:w-3/5 pb-16">
       <Head>
         <title>Your Notes - Noted</title>
       </Head>
@@ -87,17 +103,26 @@ const NotesPage = () => {
           submitHandler={handleFormSubmit}
         />
       )}
-      <div className="bg-slate-50 absolute bottom-6 left-1/2 -translate-x-2/4 cursor-pointer flex items-center py-2 px-4 rounded-full">
-        <div className="text-slate-900 h-8 w-8 mr-4">
+      <div className="bg-slate-50 fixed bottom-6 left-1/2 -translate-x-2/4 cursor-pointer flex items-center py-2 px-4 rounded-full text-sm lg:text-base">
+        <div className="text-slate-900 h-4 w-4 mr-2">
           <PlusCircleIcon />
         </div>
         <p className="text-slate-900 whitespace-nowrap" onClick={handleIsCreating}>
           New note
         </p>
       </div>
-      <div className="mt-10">
+      <div className="mt-10 md:w-3/4 md:mx-auto">
         {tasks.length > 0 &&
-          tasks.map((task) => <Card key={i++} title={task.title} description={task.description} status={task.status} />)}
+          tasks.map((task) => (
+            <Card
+              id={task.id}
+              key={task.id}
+              title={task.title}
+              description={task.description}
+              status={task.status}
+              deleteTask={deleteThis}
+            />
+          ))}
       </div>
     </Layout>
   );
