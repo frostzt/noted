@@ -11,17 +11,17 @@ import AuthContext from '../../contexts/Auth.context';
 import FormInput from '../../Components/Form/FormInput/FormInput';
 
 const LoginPage = () => {
-  const { updateAuthToken, authToken } = useContext(AuthContext);
+  const { updateAuthToken, isAuthenticated } = useContext(AuthContext);
 
   // Form Data
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   useEffect(() => {
-    if (authToken.trim()) {
+    if (isAuthenticated) {
       Router.replace('/notes');
     }
-  }, [authToken]);
+  }, [isAuthenticated]);
 
   // Handlers
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
