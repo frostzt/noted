@@ -8,6 +8,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import Card from '../../Components/Card/Card';
 import Layout from '../../Components/Layout/Layout';
 import TaskStatus from '../../enums/TaskStatus.enum';
+import MenuDefault from '../../Components/Menu/Menu';
 import AuthContext from '../../contexts/Auth.context';
 import NoteCreator from '../../Components/Form/NoteCreator/NoteCreator';
 
@@ -106,6 +107,7 @@ const NotesPage = () => {
       <Head>
         <title>Your Notes - Noted</title>
       </Head>
+      <MenuDefault />
       {isCreating && (
         <NoteCreator
           description={description}
