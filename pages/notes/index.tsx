@@ -53,11 +53,24 @@ const NotesPage = () => {
     }
   };
 
+  // Delete handler for notes
   const deleteThis = async (id: string) => {
     try {
       setLoading(true);
       const config = { headers: { Authorization: `Bearer ${authToken}` } };
       await axios.delete(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/tasks/${id}`, config);
+      setLoading(false);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const updateThis = async (id: string, status: TaskStatus) => {
+    try {
+      setLoading(true);
+      const config = { headers: { Authorization: `Bearer ${authToken}` } };
+      const data = { status: status === TaskStatus.OPEN ? TaskStatus.DONE : TaskStatus.OPEN };
+      await axios.patch(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/tasks/${id}/status`, data, config);
       setLoading(false);
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -121,6 +134,7 @@ const NotesPage = () => {
               description={task.description}
               status={task.status}
               deleteTask={deleteThis}
+              updateTask={updateThis}
             />
           ))}
       </div>
