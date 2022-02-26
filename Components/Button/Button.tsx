@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ children, handler, className, div }) =>
       <div
         onClick={handler}
         className={cx([
-          'text-slate-50 w-fit h-fit py-2 px-3 bg-blue-500 shadow-lg shadow-blue-500/50 rounded cursor-pointer',
+          'text-slate-50 w-fit h-fit py-2 px-3 bg-blue-500 shadow-lg shadow-blue-500/50 rounded cursor-pointer text-center',
           className || null,
         ])}
       >

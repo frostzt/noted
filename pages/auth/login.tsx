@@ -44,6 +44,20 @@ const LoginPage = () => {
     }
   };
 
+  const handleTestSignin = async () => {
+    try {
+      const data = { email: 'test@test.com', password: 'Test@1234' };
+      const config = { headers: { 'Content-Type': 'application/json' } };
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/auth/signin`, data, config);
+      if (response.status == 201) {
+        updateAuthToken(response.data.accessToken);
+        Router.replace('/notes');
+      }
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <Layout className="px-8 py-4 xl:w-3/4 xl:mx-auto 2xl:w-3/5">
       <Head>
@@ -73,6 +87,9 @@ const LoginPage = () => {
           className="mb-8"
         />
         <Button className="!w-full">Login</Button>
+        <Button handler={handleTestSignin} div className="!w-full mt-8">
+          Login as test
+        </Button>
       </form>
       <p className="text-slate-50 text-sm text-center mt-10">
         Or{' '}
