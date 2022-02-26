@@ -46,7 +46,7 @@ const LoginPage = () => {
 
   const handleTestSignin = async () => {
     try {
-      const data = { email: 'test@test.com', password: 'Test@1234' };
+      const data = { email: 'test@noted.com', password: 'Test@1234' };
       const config = { headers: { 'Content-Type': 'application/json' } };
       const response = await axios.post(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/auth/signin`, data, config);
       if (response.status == 201) {
